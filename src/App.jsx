@@ -1,86 +1,54 @@
-import { useState, useEffect, use } from 'react'
+import { useState } from 'react'
 import './App.css'
 
 function App() {
-  
-  let [userChoice, setUserChoice] = useState("")
-  let [cpuChoice, setCpuChoice] = useState("")
-  let [userPoints, setUserPoints] = useState(0)
-  let [cpuPoints, setCpuPoints] = useState(0)
-  
   const choices = ["Rock", "Paper", "Scissor"]
-  
-  useEffect(()=>{
-    setCpuChoice(choices[Math.floor(Math.random() * choices.length)])
-    if (userChoice === choices[0] && cpuChoice === choices[2]){
+  const wins = {
+    Rock: "Scissor",
+    Paper: "Rock",
+    Scissor: "Paper"
+  }
+
+  const [userPoints, setUserPoints] = useState(0)
+  const [cpuPoints, setCpuPoints] = useState(0)
+  const [gameComment, setComment] = useState("Let's Play!")
+
+  // Função que roda uma rodada completa
+  const playRound = (userChoice) => {
+    const cpuChoice = choices[Math.floor(Math.random() * choices.length)]
+
+    if (userChoice === cpuChoice) {
+      setComment(`You choose ${userChoice} and CPU chose ${cpuChoice}. Draw game!`)
+    } else if (wins[userChoice] === cpuChoice) {
       setUserPoints(prev => prev + 1)
-      setUserChoice(userChoice)
-      setCpuChoice(cpuChoice)
-    }
-    if (userChoice === choices[0] && cpuChoice === choices[1]){
+      setComment(`You choose ${userChoice} and CPU chose ${cpuChoice}. You win!`)
+    } else {
       setCpuPoints(prev => prev + 1)
-      setUserChoice(userChoice)
-      setCpuChoice(cpuChoice)
+      setComment(`You choose ${userChoice} and CPU chose ${cpuChoice}. You lose!`)
     }
-    if (userChoice === choices[1] && cpuChoice === choices[2]){
-      setCpuPoints(prev => prev + 1)
-      setUserChoice(userChoice)
-      setCpuChoice(cpuChoice)
-    }
+  }
 
-    if (userChoice === choices[1] && cpuChoice === choices[0]){
-      setCpuPoints(prev => prev + 1)
-      setUserChoice(userChoice)
-      setCpuChoice(cpuChoice)
-    }
+  // Função para resetar o jogo
+  const resetGame = () => {
+    setUserPoints(0)
+    setCpuPoints(0)
+    setComment("Let's Play!")
+  }
 
-    if (userChoice === choices[2] && cpuChoice === choices[1]){
-      setUserPoints(prev => prev + 1)
-      setUserChoice(userChoice)
-      setCpuChoice(cpuChoice)
-    }
-    if (userChoice === choices[2] && cpuChoice === choices[0]){
-      setCpuPoints(prev => prev + 1)
-      setUserChoice(userChoice)
-      setCpuChoice(cpuChoice)
-    }
-
-    if (userChoice === choices[0] && cpuChoice === choices [0]) {
-      setUserPoints(prev => prev + 0)
-      setUserChoice(userChoice)
-      setCpuChoice(cpuChoice)
-    }
-
-    if (userChoice === choices[1] && cpuChoice === choices [1]) {
-      setUserPoints(prev => prev + 0)
-      setUserChoice(userChoice)
-      setCpuChoice(cpuChoice)
-    }
-
-    if (userChoice === choices[2] && cpuChoice === choices [2]) {
-      setUserPoints(prev => prev + 0)
-      setUserChoice(userChoice)
-      setCpuChoice(cpuChoice)
-    }
-  }, [userChoice])
-  
   return (
-    <>
-      <div className="main-container">
-        <h1>Rock, Paper and Scissor</h1>
-        <h2>Your points: {userPoints}</h2>
-        <h2>CPU points: {cpuPoints}</h2>
-        <h3>You choose {userChoice} and CPU choose {cpuChoice}!</h3>
+    <div className="main-container">
+      <h1>Rock, Paper and Scissor</h1>
+      <h2>Your points: {userPoints}</h2>
+      <h2>CPU points: {cpuPoints}</h2>
+      <h3>{gameComment}</h3>
 
       <div className="actions">
-        <button onClick={()=> setUserChoice(choices[0])}>Rock</button>
-        <button onClick={()=> setUserChoice(choices[1])}>Paper</button>
-        <button onClick={()=> setUserChoice(choices[2])}>Scissor</button>
-        <button>Reset game</button>
+        <button onClick={() => playRound("Rock")}>Rock</button>
+        <button onClick={() => playRound("Paper")}>Paper</button>
+        <button onClick={() => playRound("Scissor")}>Scissor</button>
+        <button onClick={resetGame}>Reset game</button>
       </div>
-        
-      </div>
-    </>
+    </div>
   )
 }
 
